@@ -18,7 +18,7 @@ const errorsHandler = require('./errors/errorHandler');
 const auth = require('./middlewares/auth');
 const routes = require('./routes');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DATABASE } = process.env;
 const app = express();
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -26,7 +26,7 @@ const limiter = rateLimit({
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
+mongoose.connect(`mongodb://127.0.0.1:27017/${DATABASE}`);
 
 // const options = {
 //   origin: [

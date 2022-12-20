@@ -67,16 +67,16 @@ function logout(req, res, next) {
 
 const createUser = (req, res, next) => {
   const {
-    email, password, name, about, avatar,
+    email, password, name,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      email, password: hash, name, about, avatar,
+      email, password: hash, name,
     }))
     // вернём записанные в базу данные
     .then((user) => res.send({
-      id: user._id, name: user.name, avatar: user.avatar, about: user.about,
+      id: user._id, name: user.name,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
