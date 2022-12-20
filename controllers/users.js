@@ -57,12 +57,11 @@ const login = (req, res, next) => {
       next(new AuthError('Неверный email или пароль'));
     });
 };
-function logout(req, res, next) {
-  try {
-    res.clearCookie('jwt')
-      .status(200)
-      .send({ message: 'успешный выход' });
-  } catch (err) { next(err); }
+
+function logout(req, res) {
+  res.clearCookie('jwt')
+    .status(200)
+    .send({ message: 'успешный выход' });
 }
 
 const createUser = (req, res, next) => {
@@ -103,11 +102,11 @@ const getUserInfo = (req, res, next) => {
     });
 };
 const updateUser = (req, res, next) => {
-  const { name } = req.body;
+  const { name, email } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
-    { name },
+    { name, email },
     {
       runValidators: true,
       new: true,
@@ -117,6 +116,8 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Некорректные данные запроса'));
+      } else if (err.name === 'MongoServerError' && err.code === 11000) {
+        next(new ExistFieldError('Email уже существует'));
       } else {
         next(err);
       }
