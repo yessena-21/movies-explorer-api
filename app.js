@@ -6,22 +6,21 @@ mongoose.set('strictQuery', true);
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
 const { errors } = require('celebrate');
 // const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-
-// const { login, createUser } = require('./controllers/users');
 const { NotFoundError } = require('./errors/not-found-error');
+const { NOT_FOUND_MESSAGE } = require('./errors/errors');
 const errorsHandler = require('./errors/errorHandler');
-const auth = require('./middlewares/auth');
 const routes = require('./routes');
-
-const { PORT = 3000, DATABASE = 'bitfilmsdb' } = process.env;
-const app = express();
+const { devUrl } = require('./utils/config');
 const { limiter } = require('./utils/rate-limiter');
 
-mongoose.connect(`mongodb://127.0.0.1:27017/${DATABASE}`);
+const { PORT = 3000, DB_URL = devUrl } = process.env;
+
+const app = express();
+
+mongoose.connect(DB_URL);
 
 // const options = {
 //   origin: [
@@ -37,21 +36,21 @@ mongoose.connect(`mongodb://127.0.0.1:27017/${DATABASE}`);
 // };
 
 // app.use('*', cors(options));
-app.use(requestLogger);
-app.use(limiter);
-app.use(cookieParser());
 
+// логгер запросов
+app.use(requestLogger);
+
+// лимитер
+app.use(limiter);
+
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use(helmet());
 app.use(routes);
 
-app.use(auth);
-app.use('/', require('./routes/users'));
-app.use('/', require('./routes/movies'));
-
 app.use('*', () => {
-  throw new NotFoundError('Страница не найдена');
+  throw new NotFoundError(NOT_FOUND_MESSAGE);
 });
 
 app.use(errorLogger);

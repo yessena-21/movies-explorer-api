@@ -1,5 +1,6 @@
-// eslint-disable-next-line no-useless-escape
-const linkRegExp = /^(http|https):\/\/(www.)?[\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+\.[\w\/]+#?/;
+// const linkRegExp = /^(http|https):\/\/(www.)?
+// [\w\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+\.[\w\/]+#?/;
+const linkRegExp = /^(https?:\/\/)([\da-z.-]{1,})(\.)([a-z]{2,6})(\/?)([\da-z-.\W]*)/;
 
 module.exports = {
   linkRegExp,

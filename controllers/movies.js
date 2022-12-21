@@ -3,37 +3,27 @@ const { CastError } = require('../errors/cast-error');
 const { ValidationError } = require('../errors/validation-error');
 const { NotFoundError } = require('../errors/not-found-error');
 const { ForbiddenError } = require('../errors/forbidden-error');
+const {
+  NOTFOUND_MOVIE_ID_MESSAGE,
+  FORBIDDEN_MESSAGE,
+  INVALID_ID,
+  VALIDATION_ERROR,
+  CAST_ERROR,
+  VALIDATION_MESSAGE,
+} = require('../errors/errors');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .then((data) => res.send(data))
     .catch(next);
 };
 
 const createMovie = (req, res, next) => {
-  const {
-    country, director, duration, year, description,
-    image, trailerLink, nameRU, nameEN, thumbnail, movieId,
-  } = req.body;
-
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    nameRU,
-    nameEN,
-    thumbnail,
-    movieId,
-    owner: req.user._id,
-  })
+  Movie.create({ ...req.body, owner: req.user._id })
     .then((data) => res.send(data))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные при создании фильма'));
+      if (err.name === VALIDATION_ERROR) {
+        next(new ValidationError(VALIDATION_MESSAGE));
       } else {
         next(err);
       }
@@ -42,25 +32,25 @@ const createMovie = (req, res, next) => {
 const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   Movie.findById(movieId)
-    .orFail(() => next(new NotFoundError('Фильм с указанным _id не найден!!')))
+    .orFail(new NotFoundError(NOTFOUND_MOVIE_ID_MESSAGE))
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        next(new ForbiddenError('Вы не имеет права удалить фильм'));
+        next(new ForbiddenError(FORBIDDEN_MESSAGE));
       } else {
         Movie.findByIdAndRemove(req.params.movieId)
-          .orFail(new NotFoundError('Фильм по указанному id не найден'))
+          .orFail(new NotFoundError(NOTFOUND_MOVIE_ID_MESSAGE))
           .then((data) => res.status(200).send(data))
           .catch((err) => {
-            if (err.name === 'CastError') {
-              next(new CastError('Невалидный id фильма'));
+            if (err.name === CAST_ERROR) {
+              next(new CastError(INVALID_ID));
             } else {
               next(err);
             }
           });
       }
     }).catch((err) => {
-      if (err.name === 'CastError') {
-        next(new CastError('Невалидный id фильма'));
+      if (err.name === CAST_ERROR) {
+        next(new CastError(INVALID_ID));
       } else {
         next(err);
       }
