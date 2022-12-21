@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', true);
-// const helmet = require('helmet');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
@@ -46,7 +46,7 @@ app.use(limiter);
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// app.use(helmet());
+app.use(helmet());
 app.use(routes);
 
 app.use('*', () => {
