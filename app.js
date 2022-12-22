@@ -9,8 +9,7 @@ const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 // const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { NotFoundError } = require('./errors/not-found-error');
-const { NOT_FOUND_MESSAGE } = require('./errors/errors');
+
 const errorsHandler = require('./errors/errorHandler');
 const routes = require('./routes');
 const { devUrl } = require('./utils/config');
@@ -48,10 +47,6 @@ app.use(bodyParser.json());
 
 app.use(helmet());
 app.use(routes);
-
-app.use('*', () => {
-  throw new NotFoundError(NOT_FOUND_MESSAGE);
-});
 
 app.use(errorLogger);
 app.use(errors());

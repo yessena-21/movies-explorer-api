@@ -13,6 +13,7 @@ const NOTFOUND_USER_ID_MESSAGE = 'Пользователь по указанно
 const NOTFOUND_MOVIE_ID_MESSAGE = 'Фильм с указанным _id не найден!';
 const VALIDATION_MESSAGE = 'Некорректные данные запроса';
 const NOT_FOUND_MESSAGE = 'Страница не найдена';
+const SUCSESS_LOGOUT = 'Успешный выход';
 
 module.exports = {
   BAD_REQUEST_ERROR_CODE,
@@ -36,4 +37,5 @@ module.exports = {
   FORBID_ERROR: 403,
   AUTH_ERROR: 401,
   EXIST_ERROR: 409,
+  SUCSESS_LOGOUT,
 };

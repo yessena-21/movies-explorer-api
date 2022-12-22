@@ -17,6 +17,7 @@ const {
   CAST_ERROR,
   VALIDATION_MESSAGE,
   MONGO_SERVER_ERROR,
+  SUCSESS_LOGOUT,
 } = require('../errors/errors');
 
 const { devJWT } = require('../utils/config');
@@ -74,7 +75,7 @@ const login = (req, res, next) => {
 function logout(req, res) {
   res.clearCookie('jwt')
     .status(200)
-    .send({ message: 'успешный выход' });
+    .send({ message: SUCSESS_LOGOUT });
 }
 
 const createUser = (req, res, next) => {
