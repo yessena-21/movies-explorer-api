@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-// const cors = require('cors');
+const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const errorsHandler = require('./errors/errorHandler');
@@ -21,20 +21,20 @@ const app = express();
 
 mongoose.connect(DB_URL);
 
-// const options = {
-//   origin: [
-//     'http://localhost:3000',
-//     'http://yessena.nomoredomains.club',
-//     'https://yessena.nomoredomains.club',
-//   ],
-//   // methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-//   // preflightContinue: false,
-//   // optionsSuccessStatus: 204,
-//   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-//   credentials: true,
-// };
+const options = {
+  origin: [
+    'http://localhost:3000',
+    'http://yesfilms.nomoredomains.club',
+    'https://yesfilms.nomoredomains.club',
+  ],
+  // methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  // preflightContinue: false,
+  // optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
 
-// app.use('*', cors(options));
+app.use('*', cors(options));
 
 // логгер запросов
 app.use(requestLogger);
